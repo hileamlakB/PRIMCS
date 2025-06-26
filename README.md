@@ -34,35 +34,6 @@ chmod +x scripts/docker_run.sh
 ./scripts/docker_run.sh         # prints the MCP URL when ready
 ```
 
-If you prefer the manual commands:
-
-```bash
-docker build -t primcs .
-docker run -p 9000:9000 primcs
-```
-
-Connect from a client:
-
-```bash
-fastmcp dev server/main.py   # launches an inspector & auto-connects
-# then call the `run_code` tool via UI
-```
-
-### Discover available tools (Python client)
-
-```python
-import asyncio
-from fastmcp import Client
-
-async def main():
-    async with Client("http://localhost:9000/mcp") as client:
-        tools = await client.list_tools()
-        print("Available tools:")
-        for tool in tools:
-            print(f"- {tool.name}: {tool.description}")
-
-asyncio.run(main())
-```
 
 ## Examples
 
@@ -98,23 +69,6 @@ See the `examples/` directory for more advanced usage and client patterns.
 
 ---
 
-## MCP Tool: `run_code`
-Input schema (abridged):
-```jsonc
-{
-  "code":        "<python-source>",
-  "requirements": ["numpy>=1.26"],  // optional
-  "files": [{ "url": "https://…", "mountPath": "data.csv" }] // optional
-}
-```
-
-Output:
-```jsonc
-{ "stdout": "…", "stderr": "…", "artifacts": [] }
-```
-
----
-
 ## Roadmap
 - Speed up venv creation, use cached venvs
 - Harden CPU / memory limits 
@@ -128,6 +82,3 @@ Output:
 
 
 PRs welcome!  See `LICENSE` (MIT). 
-
-fastmcp dev server/main.py   # launches an inspector & auto-connects
-# then call the `run_code` tool via UI 
