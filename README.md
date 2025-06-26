@@ -117,6 +117,7 @@ Output:
 
 ## Roadmap
 - Speed up venv creation, use cached venvs
+- Strict sandboxing (prevent accesing files beyond the venv folder, use user groups)
 - Harden CPU / memory limits 
 - Artifact storage backend (S3, local disk)
 - Unit tests & CI (GitHub Actions)
