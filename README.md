@@ -1,6 +1,6 @@
-# PRIMCS – Python Runtime Interpreter MCP Server
+# PRIMS – Python Runtime Interpreter MCP Server
 
-PRIMCS is a tiny open-source **Model Context Protocol (MCP)** server that lets LLM agents run arbitrary Python code in a secure, throw-away sandbox.
+PRIMS is a tiny open-source **Model Context Protocol (MCP)** server that lets LLM agents run arbitrary Python code in a secure, throw-away sandbox.
 
 •   **One tool, one job.**  Exposes a single MCP tool – `run_code` – that executes user-supplied Python and streams back `stdout / stderr`.
 
