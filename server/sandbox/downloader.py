@@ -13,6 +13,11 @@ async def _fetch(session: aiohttp.ClientSession, url: str, path: Path) -> None:
     async with session.get(url) as resp:
         resp.raise_for_status()
         path.write_bytes(await resp.read())
+    # Make the file read-only
+    try:
+        path.chmod(0o444)
+    except PermissionError:  # fallback on platforms that forbid chmod inside container
+        pass
 
 
 async def download_files(files: list[dict[str, str]], dest: Path) -> list[Path]:
