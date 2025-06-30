@@ -23,6 +23,8 @@ async def _fetch(session: aiohttp.ClientSession, url: str, path: Path) -> None:
 async def download_files(files: list[dict[str, str]], dest: Path) -> list[Path]:
     """Download *files* concurrently into *dest*.
 
+    Each element in *files* must be a dict with keys ``url`` and **``mountPath``** (required).
+
     Returns list of local paths (relative to *dest*).
     """
     if not files:
@@ -34,10 +36,13 @@ async def download_files(files: list[dict[str, str]], dest: Path) -> list[Path]:
         tasks = []
         for meta in files:
             url = meta["url"]
-            relative = Path(meta.get("mountPath") or Path(url).name)
+            if "mountPath" not in meta or not meta["mountPath"]:
+                raise ValueError("Each file entry must include a non-empty 'mountPath' key.")
+
+            relative = Path(meta["mountPath"])
             local = dest / relative
             local.parent.mkdir(parents=True, exist_ok=True)
             tasks.append(_fetch(session, url, local))
         await asyncio.gather(*tasks)
 
-    return [dest / (f.get("mountPath") or Path(f["url"]).name) for f in files] 
+    return [dest / Path(f["mountPath"]) for f in files] 

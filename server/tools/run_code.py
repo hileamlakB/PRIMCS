@@ -23,8 +23,8 @@ def register(mcp: FastMCP) -> None:
             "***YOU MUST use `print()` (or log to stderr) if you want the result returned.*** "
             "Optional parameters:"\
             " • `requirements` – a list of pip specs to install before execution."\
-            " • `files` – list of {url, mountPath?}. Each file is downloaded before execution and"\
-            "   made available at ./mounts/<mountPath|filename>. Use that path in your code, e.g."\
+            " • `files` – list of {url, mountPath}. Each file is downloaded before execution and"\
+            "   made available at ./mounts/<mountPath>. **mountPath is REQUIRED.** Use that path in your code, e.g."\
             "   `pd.read_csv('mounts/my_data.csv')`. Files are read-only and disappear after the "\
             "   run."
             " ***Example:*** `df.head()` **will NOT be returned**; you must call `print(df.head())` instead."
