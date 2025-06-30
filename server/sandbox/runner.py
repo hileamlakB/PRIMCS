@@ -5,6 +5,7 @@ import asyncio
 import shutil
 import textwrap
 from pathlib import Path
+from typing import TypedDict, List
 
 from server.config import TIMEOUT_SECONDS, TMP_DIR
 from server.sandbox.downloader import download_files
@@ -13,26 +14,46 @@ from server.sandbox.env import create_virtualenv
 __all__ = ["run_code"]
 
 
+# Typed return for run_code results.
+class RunCodeResult(TypedDict):
+    stdout: str
+    stderr: str
+    artifacts: List[str]
+
+
 async def run_code(
     *,
     code: str,
     requirements: list[str],
     files: list[dict[str, str]],
     run_id: str,
+    session_id: str | None = None,
     logger,
-) -> dict[str, str]:
+) -> RunCodeResult:
     """Execute *code* inside an isolated virtual-env and return captured output."""
 
-    work = TMP_DIR / f"run_{run_id}"
-    if work.exists():
-        shutil.rmtree(work)
-    work.mkdir(parents=True, exist_ok=True)
+    if session_id:
+        # Persist workspace for the lifetime of the client session.
+        work = TMP_DIR / f"session_{session_id}"
+        work.mkdir(parents=True, exist_ok=True)
+    else:
+        # Legacy per-run workspace (stateless behaviour).
+        work = TMP_DIR / f"run_{run_id}"
+        if work.exists():
+            shutil.rmtree(work)
+        work.mkdir(parents=True, exist_ok=True)
+
+    # Ensure mounts directory exists for all modes.
+    (work / "mounts").mkdir(parents=True, exist_ok=True)
+    # Directory where user code should place output/artifacts.
+    (work / "output").mkdir(parents=True, exist_ok=True)
 
     await download_files(files, work / "mounts")
 
     py = await create_virtualenv(requirements, work)
 
-    script = work / "script.py"
+    script_name = f"script_{run_id}.py" if session_id else "script.py"
+    script = work / script_name
     script.write_text(textwrap.dedent(code))
 
     proc = await asyncio.create_subprocess_exec(
@@ -50,4 +71,10 @@ async def run_code(
         await proc.wait()
         raise RuntimeError(f"Execution timed out after {TIMEOUT_SECONDS}s")
 
-    return {"stdout": out.decode(), "stderr": err.decode(), "artifacts": []} 
+    # Collect artifacts inside the output directory.
+    artifacts: list[str] = []
+    for p in (work / "output").rglob("*"):
+        if p.is_file():
+            artifacts.append(str(p.relative_to(work)))
+
+    return {"stdout": out.decode(), "stderr": err.decode(), "artifacts": artifacts} 

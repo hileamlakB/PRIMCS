@@ -1,9 +1,10 @@
 """MCP tool: execute Python code in a sandbox."""
 from typing import Any
 
-from fastmcp import FastMCP
+from fastmcp import FastMCP, Context
+from fastmcp.server.dependencies import get_http_headers
 
-from server.sandbox.runner import run_code as sandbox_execute
+from server.sandbox.runner import run_code as sandbox_execute, RunCodeResult
 
 
 def register(mcp: FastMCP) -> None:
@@ -34,24 +35,32 @@ def register(mcp: FastMCP) -> None:
         code: str,
         requirements: list[str] | None = None,
         files: list[dict[str, str]] | None = None,
-        ctx: Any | None = None,
-    ) -> dict[str, Any]:
+        ctx: Context | None = None,
+    ) -> RunCodeResult:
         """Tool implementation compatible with FastMCP."""
 
         # Default mutable params
         requirements = requirements or []
         files = files or []
 
+
         if len(code) > 20_000:
             raise ValueError("Code block too large (20k char limit)")
 
+        
+        sid = ctx.session_id  # may be None on Streamable-HTTP
+        if not sid and ctx.request_context.request:
+            # see issue https://github.com/modelcontextprotocol/python-sdk/issues/1063 for more details
+            sid = ctx.request_context.request.headers.get("mcp-session-id") 
+            
         try:
             return await sandbox_execute(
                 code=code,
                 requirements=requirements,
                 files=files,
                 run_id=(ctx.request_id if ctx else "local"),
-                logger=(ctx.logger if ctx else None),
+                session_id=sid,
+                logger=None,
             )
         except Exception as exc:  # noqa: BLE001
             # FastMCP automatically converts exceptions into ToolError responses.
