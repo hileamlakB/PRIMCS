@@ -20,13 +20,14 @@ def register(mcp: FastMCP) -> None:
         description=(
             "Execute Python code in a secure, throw-away sandbox. "
             "The sandbox is STATELESS: every call starts in a fresh env and any files you create are deleted afterwards. "
-            "Return values are captured from stdout/stderr, so be sure to `print()` anything you want back. "
+            "***YOU MUST use `print()` (or log to stderr) if you want the result returned.*** "
             "Optional parameters:"\
             " • `requirements` – a list of pip specs to install before execution."\
             " • `files` – list of {url, mountPath?}. Each file is downloaded before execution and"\
             "   made available at ./mounts/<mountPath|filename>. Use that path in your code, e.g."\
             "   `pd.read_csv('mounts/my_data.csv')`. Files are read-only and disappear after the "\
             "   run."
+            " ***Example:*** `df.head()` **will NOT be returned**; you must call `print(df.head())` instead."
         ),
     )
     async def _run_code(
