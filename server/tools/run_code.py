@@ -43,26 +43,23 @@ def register(mcp: FastMCP) -> None:
         requirements = requirements or []
         files = files or []
 
-        print(ctx)
-        print(ctx.session_id)
-        print(ctx.request_id)
-        print(ctx.client_id)
-        print(ctx.session)
 
         if len(code) > 20_000:
             raise ValueError("Code block too large (20k char limit)")
 
-        headers = get_http_headers(include_all=True)
-        print("SERVER RECEIVED HEADERS:", headers)
-        print("ctx.session_id:", ctx.session_id)
-
+        
+        sid = ctx.session_id  # may be None on Streamable-HTTP
+        if not sid and ctx.request_context.request:
+            # see issue https://github.com/modelcontextprotocol/python-sdk/issues/1063 for more details
+            sid = ctx.request_context.request.headers.get("mcp-session-id") 
+            
         try:
             return await sandbox_execute(
                 code=code,
                 requirements=requirements,
                 files=files,
                 run_id=(ctx.request_id if ctx else "local"),
-                session_id=(ctx.session_id if ctx and ctx.session_id else None),
+                session_id=sid,
                 logger=None,
             )
         except Exception as exc:  # noqa: BLE001

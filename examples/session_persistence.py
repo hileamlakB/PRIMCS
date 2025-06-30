@@ -23,10 +23,7 @@ print("Row count:", len(df))
 async def main() -> None:
     """Demonstrate that files persist for the lifetime of an MCP session."""
     async with Client("http://localhost:9000/mcp") as client:
-
-        print(client.session)
         
-
         # 1. Run code that downloads a CSV file into the workspace mounts directory.
         first_params = {
             "code": a_sync_code_first,
