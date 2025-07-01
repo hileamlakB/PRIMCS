@@ -51,10 +51,14 @@ You can use the provided script to list all tools exposed by the server:
 python examples/list_tools.py
 ```
 
-Expected output:
+Expected output (tool names and descriptions may vary):
+
 ```
 Available tools:
 - run_code: Execute Python code in a secure sandbox with optional dependencies & file mounts.
+- list_dir: List files/directories in your session workspace.
+- preview_file: Preview up to 8 KB of a text file from your session workspace.
+- persist_artifact: Upload an output/ file to a presigned URL for permanent storage.
 ```
 
 ### Run code via the MCP server
