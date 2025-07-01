@@ -1,2 +1,3 @@
 fastmcp
 aiohttp 
+aiofiles

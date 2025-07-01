@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """MCP tool: persist an artifact to a client-provided presigned URL."""
 from pathlib import Path
 
