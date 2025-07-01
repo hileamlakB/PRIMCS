@@ -77,7 +77,7 @@ See the `examples/` directory for more advanced usage and client patterns.
 
 ## Roadmap
 - Speed up venv creation, use cached venvs
-- Strict sandboxing (prevent accesing files beyond the venv folder, use user groups)
+- Strict sandboxing (prevent accesing files beyond the venv folder, use user groups, firecrack vm)
 - Harden CPU / memory limits 
 - Artifact storage backend (S3, local disk)
 - Unit tests & CI (GitHub Actions)
