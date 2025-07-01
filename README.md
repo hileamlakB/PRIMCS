@@ -59,6 +59,7 @@ Available tools:
 - list_dir: List files/directories in your session workspace.
 - preview_file: Preview up to 8 KB of a text file from your session workspace.
 - persist_artifact: Upload an output/ file to a presigned URL for permanent storage.
+- mount_file: Download a remote file once per session to `mounts/<path>`.
 ```
 
 ### Run code via the MCP server
@@ -66,6 +67,14 @@ Available tools:
 ```bash
 python examples/run_code.py
 ```
+
+### Mount a dataset once & reuse it
+
+```bash
+python examples/mount_and_run.py
+```
+
+This mounts a CSV with `mount_file` and then reads it inside `run_code` without re-supplying the URL.
 
 ### Inspect your session workspace
 
@@ -107,6 +116,7 @@ curl -H "mcp-session-id: <your-session-id>" \
 | `list_dir`          | List files/directories inside your session workspace.        |
 | `preview_file`      | Return up to 8 KB of a text file for quick inspection.        |
 | `persist_artifact`  | Upload an `output/` file to a client-provided presigned URL. |
+| `mount_file`        | Download a remote file once per session to `mounts/<path>`. |
 
 See the `examples/` directory for end-to-end demos.
 

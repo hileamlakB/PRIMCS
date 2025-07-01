@@ -19,6 +19,7 @@ import urllib.parse
 from server.tools import run_code as run_code_tool
 from server.tools import persist_artifact as persist_artifact_tool
 from server.tools import workspace_inspect as workspace_inspect_tool
+from server.tools import mount_file as mount_file_tool
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,7 @@ mcp = FastMCP(name="primcs", version="0.1.0")
 run_code_tool.register(mcp)
 persist_artifact_tool.register(mcp)
 workspace_inspect_tool.register(mcp)
+mount_file_tool.register(mcp)
 
 @mcp.custom_route("/artifacts/{relative_path:path}", methods=["GET"])
 async def get_artifact(request: Request) -> Response:

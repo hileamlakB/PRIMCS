@@ -25,6 +25,7 @@ def register(mcp: FastMCP) -> None:
             "***YOU MUST use `print()` (or log to stderr) if you want the result returned.*** "
             " ***Example:*** `df.head()` **will NOT be returned**; you must call `print(df.head())` instead."
             "All output files you want to persist must be saved inside the output/ directory. "
+            "Files previously mounted with the `mount_file` tool are accessible at mounts/<mountPath>. "
             "Artifacts generated in the output/ directory are returned as relative paths (e.g. 'plots/plot.png'). "
             "You can download them via GET /artifacts/{relative_path}. "
             
