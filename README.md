@@ -59,19 +59,52 @@ Available tools:
 
 ### Run code via the MCP server
 
-You can execute Python code in the sandbox using the `run_code` tool:
-
 ```bash
 python examples/run_code.py
 ```
 
-Expected output:
-```
-Result:
-{'stdout': 'Hello from FastMCP!\n', 'stderr': '', 'artifacts': []}
+### Inspect your session workspace
+
+```bash
+python examples/inspect_workspace.py
 ```
 
-See the `examples/` directory for more advanced usage and client patterns.
+This shows how to use the **`list_dir`** and **`preview_file`** tools to browse files your code created.
+
+### Persist an artifact to permanent storage
+
+The **`persist_artifact`** tool uploads a file from your `output/` directory to a presigned URL.
+
+Example (Python):
+
+```python
+await client.call_tool("persist_artifact", {
+    "relative_path": "plots/plot.png",
+    "presigned_url": "https://bucket.s3.amazonaws.com/...signature...",
+})
+```
+
+### Download an artifact
+
+Small artifacts can be fetched directly:
+
+```bash
+curl -H "mcp-session-id: <your-session-id>" \
+     http://localhost:9000/artifacts/plots/plot.png -o plot.png
+```
+
+---
+
+## Available tools
+
+| Tool                | Purpose |
+|---------------------|---------------------------------------------------------------|
+| `run_code`          | Execute Python in an isolated sandbox with optional pip deps. |
+| `list_dir`          | List files/directories inside your session workspace.        |
+| `preview_file`      | Return up to 8 KB of a text file for quick inspection.        |
+| `persist_artifact`  | Upload an `output/` file to a client-provided presigned URL. |
+
+See the `examples/` directory for end-to-end demos.
 
 ---
 
