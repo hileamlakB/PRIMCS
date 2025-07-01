@@ -6,6 +6,7 @@ import shutil
 import textwrap
 from pathlib import Path
 from typing import TypedDict, List
+import mimetypes
 
 from server.config import TIMEOUT_SECONDS, TMP_DIR
 from server.sandbox.downloader import download_files
@@ -14,11 +15,19 @@ from server.sandbox.env import create_virtualenv
 __all__ = ["run_code"]
 
 
+# Precise schema for each artifact entry.
+class ArtifactMeta(TypedDict):
+    name: str
+    relative_path: str
+    size: int
+    mime: str
+
+
 # Typed return for run_code results.
 class RunCodeResult(TypedDict):
     stdout: str
     stderr: str
-    artifacts: List[str]
+    artifacts: List[ArtifactMeta]
 
 
 async def run_code(
@@ -28,9 +37,8 @@ async def run_code(
     files: list[dict[str, str]],
     run_id: str,
     session_id: str | None = None,
-    logger,
 ) -> RunCodeResult:
-    """Execute *code* inside an isolated virtual-env and return captured output."""
+    """Execute *code* inside an isolated virtual-env and return captured output. Artifacts are returned as paths relative to the output directory. Only files inside output/ are included."""
 
     if session_id:
         # Persist workspace for the lifetime of the client session.
@@ -72,9 +80,21 @@ async def run_code(
         raise RuntimeError(f"Execution timed out after {TIMEOUT_SECONDS}s")
 
     # Collect artifacts inside the output directory.
-    artifacts: list[str] = []
-    for p in (work / "output").rglob("*"):
+    artifacts: list[ArtifactMeta] = []
+    output_dir = work / "output"
+    for p in output_dir.rglob("*"):
         if p.is_file():
-            artifacts.append(str(p.relative_to(work)))
+            try:
+                rel_path = p.relative_to(output_dir)
+            except ValueError:
+                continue  # skip files not in output_dir
+            size = p.stat().st_size
+            mime, _ = mimetypes.guess_type(str(p))
+            artifacts.append({
+                "name": rel_path.name,
+                "relative_path": rel_path.as_posix(),
+                "size": size,
+                "mime": mime or "application/octet-stream",
+            })
 
     return {"stdout": out.decode(), "stderr": err.decode(), "artifacts": artifacts} 

@@ -11,6 +11,10 @@ import logging
 import os
 
 from fastmcp import FastMCP
+from starlette.requests import Request
+from starlette.responses import FileResponse, Response
+from server.config import TMP_DIR
+import urllib.parse
 
 from server.tools import run_code as run_code_tool
 
@@ -19,6 +23,38 @@ logger = logging.getLogger(__name__)
 # Expose a globally named `mcp` so the FastMCP CLI can auto-discover it.
 mcp = FastMCP(name="primcs", version="0.1.0")
 run_code_tool.register(mcp)
+
+@mcp.custom_route("/artifacts/{relative_path:path}", methods=["GET"])
+async def get_artifact(request: Request) -> Response:
+    """
+    Serve an artifact file for the current session. The client must include the session ID
+    in the "mcp-session-id" header. The URL path is the relative path returned by the tool
+    (e.g. "plots/plot.png"), which is resolved under session_<id>/output/.
+    """
+    relative_path = request.path_params["relative_path"]
+    relative_path = os.path.normpath(relative_path)
+    if relative_path.startswith("..") or os.path.isabs(relative_path):
+        return Response("Invalid artifact path", status_code=400)
+
+    session_id = request.headers.get("mcp-session-id")
+    if not session_id:
+        return Response("Missing mcp-session-id header", status_code=400)
+
+    base_dir = TMP_DIR / f"session_{session_id}" / "output"
+    file_path = base_dir / relative_path
+
+    try:
+        file_path = file_path.resolve(strict=True)
+    except FileNotFoundError:
+        return Response("File not found", status_code=404)
+
+    # Ensure file is within the output directory
+    if not str(file_path).startswith(str(base_dir.resolve())):
+        return Response("Forbidden", status_code=403)
+    if not file_path.is_file():
+        return Response("Not a file", status_code=404)
+
+    return FileResponse(str(file_path), filename=os.path.basename(file_path))
 
 if __name__ == "__main__":  # pragma: no cover
     port = int(os.getenv("PORT", "9000"))
