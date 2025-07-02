@@ -31,7 +31,7 @@ source .venv/bin/activate
 ### 2. Launch the server
 
 ```bash
-fastmcp run server/main.py           # binds http://0.0.0.0:9000/mcp
+python -m server.main         # binds http://0.0.0.0:9000/mcp
 ```
 
 ### 3. Docker

@@ -4,7 +4,7 @@ Generates instructions for an agent that outputs Python code to be executed via 
 from __future__ import annotations
 
 
-from fastmcp import FastMCP, Context
+from fastmcp import FastMCP
 
 
 _TEMPLATE = (
@@ -39,7 +39,6 @@ def register(mcp: FastMCP) -> None:
     def _python_programmer_prompt(
         task: str,
         mounted_files: list[str] | None = None,
-        ctx: Context | None = None,
     ) -> str:
         joined = "\n".join(mounted_files or [])
         return _TEMPLATE.format(task=task.strip(), mounted_files=joined) 
