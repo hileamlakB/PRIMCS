@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import List
 
-from fastmcp import FastMCP, PromptContext
+from fastmcp import FastMCP, Context
 
 
 _TEMPLATE = (
@@ -40,7 +40,7 @@ def register(mcp: FastMCP) -> None:
     def _python_programmer_prompt(
         task: str,
         mounted_files: List[str] | None = None,
-        ctx: PromptContext | None = None,
+        ctx: Context | None = None,
     ) -> str:
         joined = "\n".join(mounted_files or [])
         return _TEMPLATE.format(task=task.strip(), mounted_files=joined) 

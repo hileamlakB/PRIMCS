@@ -1,5 +1,6 @@
 <p align="left">
   <img src="primslogo.png" alt="PRIMS Logo" width="200"/>
+  <a href="#"><img src="https://img.shields.io/badge/status-alpha-orange?style=for-the-badge" alt="Project status: Alpha"/></a>
 </p>
 
 # PRIMS – Python Runtime Interpreter MCP Server
