@@ -28,8 +28,8 @@ def register(mcp: FastMCP) -> None:
             "Files previously mounted with the `mount_file` tool are accessible at mounts/<mountPath>. "
             "Artifacts generated in the output/ directory are returned as relative paths (e.g. 'plots/plot.png'). "
             "You can download them via GET /artifacts/{relative_path}. "
-            
-            "Optional parameters:"
+            "If your code produces no output (stdout is empty) or fails, a feedback array will be included in the response with suggestions to use print statements and ensure your code is self-contained (not notebook-style). "
+            "\nOptional parameters:"
             " • `requirements` – a list of pip specs to install before execution."
             " • `files` – list of {url, mountPath}. Each file is downloaded before execution and"
             "   made available at ./mounts/<mountPath>. **mountPath is REQUIRED.** Use that path in your code, e.g."
@@ -42,7 +42,7 @@ def register(mcp: FastMCP) -> None:
         files: list[dict[str, str]] | None = None,
         ctx: Context | None = None,
     ) -> RunCodeResult:
-        """Tool implementation compatible with FastMCP. If a session_id is provided, the environment and files persist for the session. If not, the sandbox is stateless and files are deleted after each run. Artifacts are returned as relative paths and downloadable via /artifacts/{relative_path}. The session_id is always included in the response if available."""
+        """Tool implementation compatible with FastMCP. If a session_id is provided, the environment and files persist for the session. If not, the sandbox is stateless and files are deleted after each run. Artifacts are returned as relative paths and downloadable via /artifacts/{relative_path}. The session_id is always included in the response if available.\nIf stdout is empty or an error occurs, a feedback array is included in the response with suggestions to use print statements and ensure code is self-contained."""
 
         # Default mutable params
         requirements = requirements or []
@@ -68,7 +68,19 @@ def register(mcp: FastMCP) -> None:
             if sid:
                 result = dict(result)
                 result["session_id"] = sid
+            # Add feedback if stdout is empty
+            feedback = []
+            if not result.get("stdout"):
+                feedback.append(
+                    "No output detected. Please use print statements to display results, and ensure your code is self-contained and runnable as a script (not notebook-style)."
+                )
+            if feedback:
+                result = dict(result)
+                result["feedback"] = feedback
             return result
         except Exception as exc:  # noqa: BLE001
             # FastMCP automatically converts exceptions into ToolError responses.
-            raise exc 
+            feedback = [
+                "An error occurred. Please ensure your code is self-contained, uses print statements for output, and is not written in notebook style."
+            ]
+            raise type(exc)(str(exc) + f"\nFEEDBACK: {feedback[0]}") from exc 

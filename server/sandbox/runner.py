@@ -24,10 +24,14 @@ class ArtifactMeta(TypedDict):
 
 
 # Typed return for run_code results.
-class RunCodeResult(TypedDict):
+class RunCodeResult(TypedDict, total=False):
+    """Result of running code in the sandbox.
+    Optionally includes a feedback field with suggestions or warnings (list of strings).
+    """
     stdout: str
     stderr: str
     artifacts: List[ArtifactMeta]
+    feedback: list[str]
 
 
 async def run_code(
