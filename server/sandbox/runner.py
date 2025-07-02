@@ -31,7 +31,7 @@ class RunCodeResult(TypedDict, total=False):
     stdout: str
     stderr: str
     artifacts: List[ArtifactMeta]
-    feedback: list[str]
+    feedback: str
 
 
 async def run_code(

@@ -6,6 +6,15 @@ from fastmcp.server.dependencies import get_http_headers
 
 from server.sandbox.runner import run_code as sandbox_execute, RunCodeResult
 
+RESPONSE_FEEDBACK = (
+    "No output detected. Use print() (or log to stderr) to display results. "
+    "For pandas DataFrames, call print(df.head()) instead of just df.head(). "
+    "To see all columns or wider tables, run pd.set_option('display.max_columns', None) and "
+    "pd.set_option('display.width', 10000) before printing. "
+    "Ensure your code is a self-contained script (not notebook style) and reference mounted files "
+    "with their mount path, e.g. pd.read_csv('mounts/my_data.csv'). "
+    "If an error occurs, double-check these points first."
+)
 
 def register(mcp: FastMCP) -> None:
     """Register the `run_code` tool on a FastMCP server instance.
@@ -19,21 +28,16 @@ def register(mcp: FastMCP) -> None:
     @mcp.tool(
         name="run_code",
         description=(
-            "Execute Python code in a secure sandbox. "
-            "If a session_id is provided (via connection headers), the environment and files persist for the duration of the session. "
-            "If no session_id is provided, the sandbox is stateless and files are deleted after each run. "
-            "***YOU MUST use `print()` (or log to stderr) if you want the result returned.*** "
-            " ***Example:*** `df.head()` **will NOT be returned**; you must call `print(df.head())` instead."
-            "All output files you want to persist must be saved inside the output/ directory. "
-            "Files previously mounted with the `mount_file` tool are accessible at mounts/<mountPath>. "
-            "Artifacts generated in the output/ directory are returned as relative paths (e.g. 'plots/plot.png'). "
-            "You can download them via GET /artifacts/{relative_path}. "
-            "If your code produces no output (stdout is empty) or fails, a feedback array will be included in the response with suggestions to use print statements and ensure your code is self-contained (not notebook-style). "
-            "\nOptional parameters:"
-            " • `requirements` – a list of pip specs to install before execution."
-            " • `files` – list of {url, mountPath}. Each file is downloaded before execution and"
-            "   made available at ./mounts/<mountPath>. **mountPath is REQUIRED.** Use that path in your code, e.g."
-            "   `pd.read_csv('mounts/my_data.csv')`. Files are read-only and disappear after the run."
+            "Run self-contained Python scripts in an isolated sandbox. "
+            "Send a 'session_id' header to reuse the environment across runs; otherwise the sandbox is reset each time. "
+            "Use print() (or log to stderr) to capture output—expressions like df.head() alone will not be returned. "
+            "Store any artifacts you want back in the output/ directory; they are returned as relative paths and downloadable via /artifacts/{relative_path}. "
+            "Mounted files are available at mounts/<mountPath>. "
+            "If stdout is empty or execution fails, a 'feedback' string is added to the response with suggestions. "
+            "Tip: when printing large pandas DataFrames, call pd.set_option('display.max_columns', None) and pd.set_option('display.width', 10000) first. Moreover try to get column names separately."
+            "Optional parameters: requirements (list of pip specs) and files [{url, mountPath}]. "
+            "Each file is downloaded before execution and made available at ./mounts/<mountPath>. "
+
         ),
     )
     async def _run_code(
@@ -69,14 +73,9 @@ def register(mcp: FastMCP) -> None:
                 result = dict(result)
                 result["session_id"] = sid
             # Add feedback if stdout is empty
-            feedback = []
             if not result.get("stdout"):
-                feedback.append(
-                    "No output detected. Please use print statements to display results, and ensure your code is self-contained and runnable as a script (not notebook-style)."
-                )
-            if feedback:
                 result = dict(result)
-                result["feedback"] = feedback
+                result["feedback"] = RESPONSE_FEEDBACK
             return result
         except Exception as exc:  # noqa: BLE001
             # FastMCP automatically converts exceptions into ToolError responses.
