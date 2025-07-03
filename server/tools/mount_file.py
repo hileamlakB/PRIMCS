@@ -1,4 +1,5 @@
 """MCP tool: download one or more remote files into mounts/ for the current session."""
+
 from pathlib import Path
 from typing import List, Dict
 import aiohttp
@@ -16,7 +17,9 @@ def _session_root(ctx: Context | None) -> Path:
         if not sid and ctx.request_context.request:
             sid = ctx.request_context.request.headers.get("mcp-session-id")
     if not sid:
-        raise ValueError("Missing session_id; include mcp-session-id header or create session-aware client.")
+        raise ValueError(
+            "Missing session_id; include mcp-session-id header or create session-aware client."
+        )
     root = TMP_DIR / f"session_{sid}"
     root.mkdir(parents=True, exist_ok=True)
     (root / "mounts").mkdir(parents=True, exist_ok=True)
@@ -45,4 +48,4 @@ def register(mcp: FastMCP) -> None:
         spec: Dict[str, str] = {"url": url, "mountPath": mount_path}
         downloaded: List[Path] = await download_files([spec], mounts_dir)
         local = downloaded[0]
-        return {"mounted_as": str(local.relative_to(root)), "bytes": local.stat().st_size} 
+        return {"mounted_as": str(local.relative_to(root)), "bytes": local.stat().st_size}

@@ -1,4 +1,5 @@
 """MCP tool: execute Python code in a sandbox."""
+
 from typing import Any
 
 from fastmcp import FastMCP, Context
@@ -15,6 +16,7 @@ RESPONSE_FEEDBACK = (
     "with their mount path, e.g. pd.read_csv('mounts/my_data.csv'). "
     "If an error occurs, double-check these points first."
 )
+
 
 def register(mcp: FastMCP) -> None:
     """Register the `run_code` tool on a FastMCP server instance.
@@ -37,7 +39,6 @@ def register(mcp: FastMCP) -> None:
             "Tip: when printing large pandas DataFrames, call pd.set_option('display.max_columns', None) and pd.set_option('display.width', 10000) first. Moreover try to get column names separately."
             "Optional parameters: requirements (list of pip specs) and files [{url, mountPath}]. "
             "Each file is downloaded before execution and made available at ./mounts/<mountPath>. "
-
         ),
     )
     async def _run_code(
@@ -58,7 +59,7 @@ def register(mcp: FastMCP) -> None:
         sid = ctx.session_id  # may be None on Streamable-HTTP
         if not sid and ctx.request_context.request:
             # see issue https://github.com/modelcontextprotocol/python-sdk/issues/1063 for more details
-            sid = ctx.request_context.request.headers.get("mcp-session-id") 
+            sid = ctx.request_context.request.headers.get("mcp-session-id")
 
         try:
             result = await sandbox_execute(
@@ -82,4 +83,4 @@ def register(mcp: FastMCP) -> None:
             feedback = [
                 "An error occurred. Please ensure your code is self-contained, uses print statements for output, and is not written in notebook style."
             ]
-            raise type(exc)(str(exc) + f"\nFEEDBACK: {feedback[0]}") from exc 
+            raise type(exc)(str(exc) + f"\nFEEDBACK: {feedback[0]}") from exc

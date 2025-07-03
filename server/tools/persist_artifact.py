@@ -1,4 +1,5 @@
 """MCP tool: persist an artifact to a client-provided presigned URL."""
+
 from pathlib import Path
 
 import aiohttp
@@ -56,4 +57,4 @@ def register(mcp: FastMCP) -> None:
                 if status >= 400:
                     raise RuntimeError(f"Upload failed with HTTP {status}")
 
-        return {"uploaded_bytes": size, "status": status} 
+        return {"uploaded_bytes": size, "status": status}

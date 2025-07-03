@@ -5,6 +5,7 @@ Run with:
 
 Starts an MCP stdio server exposing the `run_code` tool.
 """
+
 from __future__ import annotations
 
 import logging
@@ -31,6 +32,7 @@ persist_artifact_tool.register(mcp)
 workspace_inspect_tool.register(mcp)
 mount_file_tool.register(mcp)
 python_programmer_prompt.register(mcp)
+
 
 @mcp.custom_route("/artifacts/{relative_path:path}", methods=["GET"])
 async def get_artifact(request: Request) -> Response:
@@ -64,7 +66,8 @@ async def get_artifact(request: Request) -> Response:
 
     return FileResponse(str(file_path), filename=os.path.basename(file_path))
 
+
 if __name__ == "__main__":  # pragma: no cover
     port = int(os.getenv("PORT", "9000"))
     # Start the server with HTTP transport (modern replacement for SSE)
-    mcp.run(transport="streamable-http", host="0.0.0.0", port=port) 
+    mcp.run(transport="streamable-http", host="0.0.0.0", port=port)

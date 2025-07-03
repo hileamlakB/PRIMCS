@@ -1,6 +1,7 @@
 """Python programmer prompt for FastMCP.
 Generates instructions for an agent that outputs Python code to be executed via the `run_code` tool.
 """
+
 from __future__ import annotations
 
 
@@ -41,4 +42,4 @@ def register(mcp: FastMCP) -> None:
         mounted_files: list[str] | None = None,
     ) -> str:
         joined = "\n".join(mounted_files or [])
-        return _TEMPLATE.format(task=task.strip(), mounted_files=joined) 
+        return _TEMPLATE.format(task=task.strip(), mounted_files=joined)

@@ -1,4 +1,5 @@
 """Orchestrate sandbox execution of untrusted Python code."""
+
 from __future__ import annotations
 
 import asyncio
@@ -28,6 +29,7 @@ class RunCodeResult(TypedDict, total=False):
     """Result of running code in the sandbox.
     Optionally includes a feedback field with suggestions or warnings (list of strings).
     """
+
     stdout: str
     stderr: str
     artifacts: List[ArtifactMeta]
@@ -94,11 +96,13 @@ async def run_code(
                 continue  # skip files not in output_dir
             size = p.stat().st_size
             mime, _ = mimetypes.guess_type(str(p))
-            artifacts.append({
-                "name": rel_path.name,
-                "relative_path": rel_path.as_posix(),
-                "size": size,
-                "mime": mime or "application/octet-stream",
-            })
+            artifacts.append(
+                {
+                    "name": rel_path.name,
+                    "relative_path": rel_path.as_posix(),
+                    "size": size,
+                    "mime": mime or "application/octet-stream",
+                }
+            )
 
-    return {"stdout": out.decode(), "stderr": err.decode(), "artifacts": artifacts} 
+    return {"stdout": out.decode(), "stderr": err.decode(), "artifacts": artifacts}

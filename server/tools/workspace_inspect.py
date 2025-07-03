@@ -12,12 +12,14 @@ from server.config import TMP_DIR
 
 _MAX_PREVIEW_BYTES = 8 * 1024  # 8 KB
 
+
 class DirEntry(TypedDict):
     name: str
     path: str
     type: str  # 'file' | 'directory'
     size: int
     modified: str  # ISO timestamp
+
 
 class FilePreview(TypedDict):
     name: str
@@ -34,7 +36,9 @@ def _get_session_root(ctx: Context | None) -> Path:
         if not sid and ctx.request_context.request:
             sid = ctx.request_context.request.headers.get("mcp-session-id")
     if not sid:
-        raise ValueError("Missing session_id; ensure the client includes the mcp-session-id header or uses a session-aware context.")
+        raise ValueError(
+            "Missing session_id; ensure the client includes the mcp-session-id header or uses a session-aware context."
+        )
     root = TMP_DIR / f"session_{sid}"
     root.mkdir(parents=True, exist_ok=True)
     return root.resolve()
@@ -43,7 +47,7 @@ def _get_session_root(ctx: Context | None) -> Path:
 def _resolve_in_session(ctx: Context | None, relative_path: str) -> Path:
     root = _get_session_root(ctx)
     # Normalise & forbid traversal
-    rel = Path(os.path.normpath(relative_path)) if relative_path else Path('.')
+    rel = Path(os.path.normpath(relative_path)) if relative_path else Path(".")
     if rel.is_absolute() or ".." in rel.parts:
         raise ValueError("Path must be relative to session root and may not contain '..'.")
     resolved = (root / rel).resolve()
@@ -108,4 +112,4 @@ def register(mcp: FastMCP) -> None:
             "size": size,
             "mime": mime or "application/octet-stream",
             "content": content,
-        } 
+        }
