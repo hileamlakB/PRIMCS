@@ -1,12 +1,12 @@
 """MCP tool: download one or more remote files into mounts/ for the current session."""
+
 from pathlib import Path
-from typing import List, Dict
-import aiohttp
+from typing import Dict, List
 
-from fastmcp import FastMCP, Context
+from fastmcp import Context, FastMCP
 
-from server.sandbox.downloader import download_files
 from server.config import TMP_DIR
+from server.sandbox.downloader import download_files
 
 
 def _session_root(ctx: Context | None) -> Path:
@@ -16,7 +16,9 @@ def _session_root(ctx: Context | None) -> Path:
         if not sid and ctx.request_context.request:
             sid = ctx.request_context.request.headers.get("mcp-session-id")
     if not sid:
-        raise ValueError("Missing session_id; include mcp-session-id header or create session-aware client.")
+        raise ValueError(
+            "Missing session_id; include mcp-session-id header or create session-aware client."
+        )
     root = TMP_DIR / f"session_{sid}"
     root.mkdir(parents=True, exist_ok=True)
     (root / "mounts").mkdir(parents=True, exist_ok=True)
@@ -38,11 +40,18 @@ def register(mcp: FastMCP) -> None:
         mount_path: str,
         ctx: Context | None = None,
     ) -> dict:  # {"mounted_as": "mounts/data/my.csv", "bytes": N}
-        if Path(mount_path).is_absolute() or ".." in Path(mount_path).parts or not mount_path:
+        if (
+            Path(mount_path).is_absolute()
+            or ".." in Path(mount_path).parts
+            or not mount_path
+        ):
             raise ValueError("mount_path must be a relative path without '..'")
         root = _session_root(ctx)
         mounts_dir = root / "mounts"
         spec: Dict[str, str] = {"url": url, "mountPath": mount_path}
         downloaded: List[Path] = await download_files([spec], mounts_dir)
         local = downloaded[0]
-        return {"mounted_as": str(local.relative_to(root)), "bytes": local.stat().st_size} 
+        return {
+            "mounted_as": str(local.relative_to(root)),
+            "bytes": local.stat().st_size,
+        }

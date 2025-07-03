@@ -1,8 +1,9 @@
 """MCP tool: persist an artifact to a client-provided presigned URL."""
+
 from pathlib import Path
 
 import aiohttp
-from fastmcp import FastMCP, Context
+from fastmcp import Context, FastMCP
 
 from server.config import TMP_DIR
 
@@ -30,7 +31,9 @@ def register(mcp: FastMCP) -> None:
 
         # Basic sanitisation
         if Path(relative_path).is_absolute() or ".." in Path(relative_path).parts:
-            raise ValueError("relative_path must be inside output/ and cannot contain '..'")
+            raise ValueError(
+                "relative_path must be inside output/ and cannot contain '..'"
+            )
 
         # Determine session ID
         sid = ctx.session_id
@@ -56,4 +59,4 @@ def register(mcp: FastMCP) -> None:
                 if status >= 400:
                     raise RuntimeError(f"Upload failed with HTTP {status}")
 
-        return {"uploaded_bytes": size, "status": status} 
+        return {"uploaded_bytes": size, "status": status}

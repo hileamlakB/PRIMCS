@@ -5,6 +5,7 @@ Run with:
 
 Starts an MCP stdio server exposing the `run_code` tool.
 """
+
 from __future__ import annotations
 
 import logging
@@ -13,14 +14,13 @@ import os
 from fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import FileResponse, Response
-from server.config import TMP_DIR
-import urllib.parse
 
-from server.tools import run_code as run_code_tool
-from server.tools import persist_artifact as persist_artifact_tool
-from server.tools import workspace_inspect as workspace_inspect_tool
-from server.tools import mount_file as mount_file_tool
+from server.config import TMP_DIR
 from server.prompts import python_programmer as python_programmer_prompt
+from server.tools import mount_file as mount_file_tool
+from server.tools import persist_artifact as persist_artifact_tool
+from server.tools import run_code as run_code_tool
+from server.tools import workspace_inspect as workspace_inspect_tool
 
 logger = logging.getLogger(__name__)
 
@@ -32,12 +32,14 @@ workspace_inspect_tool.register(mcp)
 mount_file_tool.register(mcp)
 python_programmer_prompt.register(mcp)
 
+
 @mcp.custom_route("/artifacts/{relative_path:path}", methods=["GET"])
 async def get_artifact(request: Request) -> Response:
     """
-    Serve an artifact file for the current session. The client must include the session ID
-    in the "mcp-session-id" header. The URL path is the relative path returned by the tool
-    (e.g. "plots/plot.png"), which is resolved under session_<id>/output/.
+    Serve an artifact file for the current session. The client must include
+    the session ID in the "mcp-session-id" header. The URL path is the
+    relative path returned by the tool (e.g. "plots/plot.png"), which is
+    resolved under session_<id>/output/.
     """
     relative_path = request.path_params["relative_path"]
     relative_path = os.path.normpath(relative_path)
@@ -64,7 +66,8 @@ async def get_artifact(request: Request) -> Response:
 
     return FileResponse(str(file_path), filename=os.path.basename(file_path))
 
+
 if __name__ == "__main__":  # pragma: no cover
     port = int(os.getenv("PORT", "9000"))
     # Start the server with HTTP transport (modern replacement for SSE)
-    mcp.run(transport="streamable-http", host="0.0.0.0", port=port) 
+    mcp.run(transport="streamable-http", host="0.0.0.0", port=port)

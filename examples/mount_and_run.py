@@ -1,9 +1,11 @@
 import asyncio
 import json
+
 from fastmcp import Client
 
 SERVER = "http://localhost:9000/mcp"
 CSV_URL = "https://raw.githubusercontent.com/cs109/2014_data/master/countries.csv"
+
 
 async def main() -> None:
     async with Client(SERVER) as client:
@@ -27,5 +29,6 @@ print('Row count:', len(pd.read_csv(path)))
         print("Run result:")
         print(json.dumps(json.loads(run_resp[0].text), indent=2))
 
+
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    asyncio.run(main())
