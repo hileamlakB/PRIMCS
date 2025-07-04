@@ -1,6 +1,5 @@
 """Download remote files to the sandbox run directory."""
 
-
 import asyncio
 from pathlib import Path
 
@@ -37,7 +36,9 @@ async def download_files(files: list[dict[str, str]], dest: Path) -> list[Path]:
         for meta in files:
             url = meta["url"]
             if "mountPath" not in meta or not meta["mountPath"]:
-                raise ValueError("Each file entry must include a non-empty 'mountPath' key.")
+                raise ValueError(
+                    "Each file entry must include a non-empty 'mountPath' key."
+                )
 
             relative = Path(meta["mountPath"])
             local = dest / relative
@@ -45,4 +46,4 @@ async def download_files(files: list[dict[str, str]], dest: Path) -> list[Path]:
             tasks.append(_fetch(session, url, local))
         await asyncio.gather(*tasks)
 
-    return [dest / Path(f["mountPath"]) for f in files] 
+    return [dest / Path(f["mountPath"]) for f in files]

@@ -1,0 +1,24 @@
+# Development dependencies for testing, linting, and CI/CD
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+pytest-timeout>=2.1.0
+
+# Code quality and formatting
+black>=23.7.0
+isort>=5.12.0
+ruff>=0.0.280
+mypy>=1.5.0
+
+# Security scanning
+bandit[toml]>=1.7.5
+safety>=2.3.0
+
+# HTTP testing
+httpx>=0.24.0
+pytest-httpx>=0.21.0
+
+# Additional testing utilities
+factory-boy>=3.3.0
+freezegun>=1.2.0
