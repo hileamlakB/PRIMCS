@@ -1,6 +1,5 @@
 """Unit tests for sandbox environment creation."""
 
-from __future__ import annotations
 
 from unittest.mock import patch
 

@@ -1,5 +1,4 @@
 # """Workspace inspection tools for session files."""
-from __future__ import annotations
 
 import mimetypes
 import os

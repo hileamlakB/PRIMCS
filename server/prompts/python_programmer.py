@@ -2,7 +2,6 @@
 Generates instructions for an agent that outputs Python code to be executed via the `run_code` tool.
 """
 
-from __future__ import annotations
 
 from fastmcp import FastMCP
 

@@ -1,6 +1,5 @@
 """Orchestrate sandbox execution of untrusted Python code."""
 
-from __future__ import annotations
 
 import asyncio
 import mimetypes
@@ -79,7 +78,7 @@ async def run_code(
 
     try:
         out, err = await asyncio.wait_for(proc.communicate(), timeout=TIMEOUT_SECONDS)
-    except asyncio.TimeoutError as err:
+    except TimeoutError as err:
         proc.kill()
         await proc.wait()
         msg = f"Execution timed out after {TIMEOUT_SECONDS}s"

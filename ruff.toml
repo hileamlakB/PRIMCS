@@ -1,5 +1,5 @@
 line-length = 88
-target-version = "py39"
+target-version = "py313"
 
 [lint]
 # Select specific rule categories that are important

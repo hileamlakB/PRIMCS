@@ -1,6 +1,5 @@
 """MCP tool: download one or more remote files into mounts/ for the current session."""
 
-from __future__ import annotations
 
 from pathlib import Path
 

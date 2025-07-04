@@ -6,7 +6,6 @@ Environment variables:
   • PRIMCS_MAX_OUTPUT – cap on stdout/stderr bytes (default 1 MB)
 """
 
-from __future__ import annotations
 
 import os
 from pathlib import Path

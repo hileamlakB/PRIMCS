@@ -6,7 +6,6 @@ Run with:
 Starts an MCP stdio server exposing the `run_code` tool.
 """
 
-from __future__ import annotations
 
 import logging
 import os
