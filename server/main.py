@@ -6,7 +6,6 @@ Run with:
 Starts an MCP stdio server exposing the `run_code` tool.
 """
 
-
 import logging
 import os
 from pathlib import Path

@@ -2,8 +2,6 @@
 
 from unittest.mock import Mock, patch
 
-import pytest
-
 from server.main import mcp
 
 
@@ -26,6 +24,7 @@ class TestMainModule:
         """Test that tool registration is called during import."""
         # Re-import the module to trigger registration
         import importlib
+
         import server.main
 
         importlib.reload(server.main)
@@ -50,8 +49,9 @@ class TestMainModule:
     def test_module_imports(self) -> None:
         """Test that required modules are imported successfully."""
         # Test that we can import all the required components
-        from server.tools.run_code import register
         from fastmcp import FastMCP
+
+        from server.tools.run_code import register
 
         assert callable(register)
         assert FastMCP is not None

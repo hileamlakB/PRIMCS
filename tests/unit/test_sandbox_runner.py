@@ -1,12 +1,11 @@
 """Unit tests for server.sandbox.runner module."""
 
-import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from server.sandbox.runner import run_code, ArtifactMeta, RunCodeResult
+from server.sandbox.runner import ArtifactMeta, RunCodeResult, run_code
 
 
 class TestRunCode:
@@ -26,7 +25,9 @@ class TestRunCode:
         requirements = ["numpy"]
         files = [{"url": "https://example.com/data.csv", "mountPath": "data.csv"}]
 
-        with patch("server.sandbox.runner.asyncio.create_subprocess_exec") as mock_subprocess:
+        with patch(
+            "server.sandbox.runner.asyncio.create_subprocess_exec"
+        ) as mock_subprocess:
             # Mock subprocess execution
             mock_process = AsyncMock()
             mock_process.communicate = AsyncMock(
@@ -85,10 +86,14 @@ class TestRunCode:
         requirements: list[str] = []
         files: list[dict[str, str]] = []
 
-        with patch("server.sandbox.runner.asyncio.create_subprocess_exec") as mock_subprocess:
+        with patch(
+            "server.sandbox.runner.asyncio.create_subprocess_exec"
+        ) as mock_subprocess:
             # Mock subprocess execution
             mock_process = AsyncMock()
-            mock_process.communicate = AsyncMock(return_value=(b"Output without session", b""))
+            mock_process.communicate = AsyncMock(
+                return_value=(b"Output without session", b"")
+            )
             mock_process.returncode = 0
             mock_subprocess.return_value = mock_process
 
@@ -116,13 +121,13 @@ class TestRunCode:
         mock_virtualenv_creation: Path,
     ) -> None:
         """Test code execution timeout handling."""
-        with patch(
-            "server.sandbox.runner.asyncio.create_subprocess_exec"
-        ) as mock_subprocess, patch(
-            "server.sandbox.runner.asyncio.wait_for"
-        ) as mock_wait_for, patch(
-            "server.sandbox.runner.create_virtualenv"
-        ) as mock_create_venv:
+        with (
+            patch(
+                "server.sandbox.runner.asyncio.create_subprocess_exec"
+            ) as mock_subprocess,
+            patch("server.sandbox.runner.asyncio.wait_for") as mock_wait_for,
+            patch("server.sandbox.runner.create_virtualenv") as mock_create_venv,
+        ):
 
             # Mock virtualenv creation to return the mocked python path
             mock_create_venv.return_value = mock_virtualenv_creation
@@ -134,7 +139,7 @@ class TestRunCode:
             mock_subprocess.return_value = mock_process
 
             # Mock timeout on the wait_for call
-            mock_wait_for.side_effect = asyncio.TimeoutError()
+            mock_wait_for.side_effect = TimeoutError()
 
             # Should raise RuntimeError
             with pytest.raises(RuntimeError, match="Execution timed out"):
@@ -162,10 +167,14 @@ class TestRunCode:
         """Test code execution with multiple artifacts."""
         code = "print('Creating artifacts')"
 
-        with patch("server.sandbox.runner.asyncio.create_subprocess_exec") as mock_subprocess:
+        with patch(
+            "server.sandbox.runner.asyncio.create_subprocess_exec"
+        ) as mock_subprocess:
             # Mock subprocess execution
             mock_process = AsyncMock()
-            mock_process.communicate = AsyncMock(return_value=(b"Creating artifacts", b""))
+            mock_process.communicate = AsyncMock(
+                return_value=(b"Creating artifacts", b"")
+            )
             mock_process.returncode = 0
             mock_subprocess.return_value = mock_process
 
@@ -176,7 +185,9 @@ class TestRunCode:
 
             # Create various file types
             (output_dir / "data.csv").write_text("col1,col2\n1,2\n3,4")
-            (output_dir / "plot.png").write_bytes(b"\x89PNG\r\n\x1a\n")  # Fake PNG header
+            (output_dir / "plot.png").write_bytes(
+                b"\x89PNG\r\n\x1a\n"
+            )  # Fake PNG header
             (output_dir / "subdir").mkdir()
             (output_dir / "subdir" / "nested.txt").write_text("nested file")
 
@@ -218,7 +229,9 @@ class TestRunCode:
         """Test that script naming varies based on session presence."""
         code = "print('test')"
 
-        with patch("server.sandbox.runner.asyncio.create_subprocess_exec") as mock_subprocess:
+        with patch(
+            "server.sandbox.runner.asyncio.create_subprocess_exec"
+        ) as mock_subprocess:
             mock_process = AsyncMock()
             mock_process.communicate = AsyncMock(return_value=(b"test", b""))
             mock_process.returncode = 0
@@ -264,7 +277,9 @@ class TestRunCode:
         """Test that required directories are created."""
         code = "print('test')"
 
-        with patch("server.sandbox.runner.asyncio.create_subprocess_exec") as mock_subprocess:
+        with patch(
+            "server.sandbox.runner.asyncio.create_subprocess_exec"
+        ) as mock_subprocess:
             mock_process = AsyncMock()
             mock_process.communicate = AsyncMock(return_value=(b"test", b""))
             mock_process.returncode = 0

@@ -2,19 +2,16 @@
 
 import shutil
 import tempfile
+from collections.abc import AsyncGenerator, Generator
 from pathlib import Path
-from typing import AsyncGenerator, Generator
 from unittest.mock import AsyncMock, Mock
 
 import pytest
-from fastmcp import FastMCP
 from httpx import AsyncClient
-
-from server.config import TMP_DIR
 
 
 @pytest.fixture
-def temp_dir() -> Generator[Path, None, None]:
+def temp_dir() -> Generator[Path]:
     """Create a temporary directory for test isolation."""
     temp_path = Path(tempfile.mkdtemp())
     try:
@@ -97,7 +94,7 @@ def mock_context() -> Mock:
 
 
 @pytest.fixture
-async def http_client() -> AsyncGenerator[AsyncClient, None]:
+async def http_client() -> AsyncGenerator[AsyncClient]:
     """Create an HTTP client for integration testing."""
     async with AsyncClient() as client:
         yield client
@@ -107,7 +104,9 @@ async def http_client() -> AsyncGenerator[AsyncClient, None]:
 def mock_subprocess_success() -> Mock:
     """Mock successful subprocess execution."""
     mock_process = AsyncMock()
-    mock_process.communicate = AsyncMock(return_value=(b"stdout output", b"stderr output"))
+    mock_process.communicate = AsyncMock(
+        return_value=(b"stdout output", b"stderr output")
+    )
     mock_process.returncode = 0
     mock_process.wait = AsyncMock(return_value=None)
     mock_process.kill = Mock(return_value=None)
@@ -144,7 +143,9 @@ def sample_files() -> list[dict[str, str]]:
 def mock_download_success(monkeypatch: pytest.MonkeyPatch) -> None:
     """Mock successful file downloads."""
 
-    async def mock_download_files(files: list[dict[str, str]], mount_dir: Path) -> list[Path]:
+    async def mock_download_files(
+        files: list[dict[str, str]], mount_dir: Path
+    ) -> list[Path]:
         paths = []
         for file_info in files:
             mount_path = mount_dir / file_info["mountPath"]

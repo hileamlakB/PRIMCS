@@ -87,7 +87,9 @@ class TestConfig:
 
                 importlib.reload(config)
 
-    def test_tmp_dir_creation(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_tmp_dir_creation(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Test that TMP_DIR is created if it doesn't exist."""
         test_dir = tmp_path / "test_primcs"
         monkeypatch.setenv("PRIMCS_TMP_DIR", str(test_dir))

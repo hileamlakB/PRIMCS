@@ -1,10 +1,10 @@
 """Unit tests for server.tools.run_code module."""
 
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
-from server.tools.run_code import register, RESPONSE_FEEDBACK
+from server.tools.run_code import RESPONSE_FEEDBACK, register
 
 
 class TestRunCodeTool:
@@ -76,7 +76,7 @@ class TestRunCodeTool:
         ) as mock_execute:
             register(mock_fastmcp)
 
-            await mock_execute(
+            _ = await mock_execute(
                 code="import numpy; print('numpy imported')",
                 requirements=sample_requirements,
                 files=[],
@@ -107,7 +107,7 @@ class TestRunCodeTool:
         ) as mock_execute:
             register(mock_fastmcp)
 
-            await mock_execute(
+            _ = await mock_execute(
                 code="print('Files available')",
                 requirements=[],
                 files=sample_files,
@@ -137,7 +137,7 @@ class TestRunCodeTool:
         ) as mock_execute:
             register(mock_fastmcp)
 
-            result = await mock_execute(
+            _ = await mock_execute(
                 code="print('test')",
                 requirements=[],
                 files=[],
@@ -170,7 +170,7 @@ class TestRunCodeTool:
         ) as mock_execute:
             register(mock_fastmcp)
 
-            result = await mock_execute(
+            _ = await mock_execute(
                 code="x = 1 + 1",  # Code that produces no output
                 requirements=[],
                 files=[],
@@ -198,7 +198,7 @@ class TestRunCodeTool:
 
             # The tool should catch and re-raise with enhanced message
             with pytest.raises(RuntimeError) as exc_info:
-                await mock_execute(
+                _ = await mock_execute(
                     code="raise Exception('test')",
                     requirements=[],
                     files=[],
@@ -218,7 +218,7 @@ class TestRunCodeTool:
         # Create very long code string
         long_code = "print('x')\n" * 10000  # Over 20k characters
 
-        with patch("server.tools.run_code.sandbox_execute") as mock_execute:
+        with patch("server.tools.run_code.sandbox_execute"):
             register(mock_fastmcp)
 
             # This validation would happen in the actual tool function
@@ -245,7 +245,7 @@ class TestRunCodeTool:
             register(mock_fastmcp)
 
             # Test with None values (should be converted to empty lists)
-            await mock_execute(
+            _ = await mock_execute(
                 code="print('test')",
                 requirements=None,  # Should become []
                 files=None,  # Should become []
@@ -254,7 +254,7 @@ class TestRunCodeTool:
             )
 
             # The actual implementation converts None to []
-            call_args = mock_execute.call_args
+            _ = mock_execute.call_args
             # We can't easily verify this due to the mocking setup,
             # but the logic is tested implicitly
 

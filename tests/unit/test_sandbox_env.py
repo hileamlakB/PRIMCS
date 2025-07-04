@@ -1,13 +1,12 @@
 """Unit tests for server.sandbox.env module."""
 
-import asyncio
 import sys
 from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from server.sandbox.env import create_virtualenv, _DEFAULT_PACKAGES
+from server.sandbox.env import _DEFAULT_PACKAGES, create_virtualenv
 
 
 class TestCreateVirtualenv:
@@ -18,9 +17,12 @@ class TestCreateVirtualenv:
         """Test successful virtual environment creation."""
         requirements = ["numpy", "pandas"]
 
-        with patch("server.sandbox.env.venv") as mock_venv, patch(
-            "server.sandbox.env.asyncio.create_subprocess_exec"
-        ) as mock_subprocess:
+        with (
+            patch("server.sandbox.env.venv") as mock_venv,
+            patch(
+                "server.sandbox.env.asyncio.create_subprocess_exec"
+            ) as mock_subprocess,
+        ):
 
             # Mock venv creation
             mock_builder = Mock()
@@ -70,9 +72,12 @@ class TestCreateVirtualenv:
         """Test virtual environment creation with pip install failure."""
         requirements = ["invalid-package"]
 
-        with patch("server.sandbox.env.venv") as mock_venv, patch(
-            "server.sandbox.env.asyncio.create_subprocess_exec"
-        ) as mock_subprocess:
+        with (
+            patch("server.sandbox.env.venv") as mock_venv,
+            patch(
+                "server.sandbox.env.asyncio.create_subprocess_exec"
+            ) as mock_subprocess,
+        ):
 
             # Mock venv creation
             mock_builder = Mock()
@@ -88,16 +93,19 @@ class TestCreateVirtualenv:
 
             # Should raise RuntimeError
             with pytest.raises(RuntimeError, match="pip install failed"):
-                await create_virtualenv(requirements, temp_dir)
+                _ = await create_virtualenv(requirements, temp_dir)
 
     @pytest.mark.asyncio
     async def test_create_virtualenv_no_requirements(self, temp_dir: Path) -> None:
         """Test virtual environment creation with no additional requirements."""
         requirements: list[str] = []
 
-        with patch("server.sandbox.env.venv") as mock_venv, patch(
-            "server.sandbox.env.asyncio.create_subprocess_exec"
-        ) as mock_subprocess:
+        with (
+            patch("server.sandbox.env.venv") as mock_venv,
+            patch(
+                "server.sandbox.env.asyncio.create_subprocess_exec"
+            ) as mock_subprocess,
+        ):
 
             # Mock venv creation
             mock_builder = Mock()
@@ -110,7 +118,7 @@ class TestCreateVirtualenv:
             mock_subprocess.return_value = mock_process
 
             # Call function
-            python_path = await create_virtualenv(requirements, temp_dir)
+            _ = await create_virtualenv(requirements, temp_dir)
 
             # Should still install default packages
             mock_subprocess.assert_called_once()
@@ -122,13 +130,22 @@ class TestCreateVirtualenv:
                 assert package in install_args
 
     @pytest.mark.asyncio
-    async def test_create_virtualenv_duplicate_requirements(self, temp_dir: Path) -> None:
+    async def test_create_virtualenv_duplicate_requirements(
+        self, temp_dir: Path
+    ) -> None:
         """Test that duplicate requirements are deduplicated."""
-        requirements = ["pandas", "numpy", "pandas"]  # pandas is duplicated and also in defaults
+        requirements = [
+            "pandas",
+            "numpy",
+            "pandas",
+        ]  # pandas is duplicated and also in defaults
 
-        with patch("server.sandbox.env.venv") as mock_venv, patch(
-            "server.sandbox.env.asyncio.create_subprocess_exec"
-        ) as mock_subprocess:
+        with (
+            patch("server.sandbox.env.venv") as mock_venv,
+            patch(
+                "server.sandbox.env.asyncio.create_subprocess_exec"
+            ) as mock_subprocess,
+        ):
 
             # Mock venv creation
             mock_builder = Mock()
@@ -141,7 +158,7 @@ class TestCreateVirtualenv:
             mock_subprocess.return_value = mock_process
 
             # Call function
-            await create_virtualenv(requirements, temp_dir)
+            _ = await create_virtualenv(requirements, temp_dir)
 
             # Check that duplicates are removed
             args = mock_subprocess.call_args[0]
@@ -165,9 +182,13 @@ class TestCreateVirtualenv:
         """Test that Windows-style paths are handled correctly."""
         requirements = ["numpy"]
 
-        with patch("server.sandbox.env.venv") as mock_venv, patch(
-            "server.sandbox.env.asyncio.create_subprocess_exec"
-        ) as mock_subprocess, patch("server.sandbox.env.sys.platform", "win32"):
+        with (
+            patch("server.sandbox.env.venv") as mock_venv,
+            patch(
+                "server.sandbox.env.asyncio.create_subprocess_exec"
+            ) as mock_subprocess,
+            patch("server.sandbox.env.sys.platform", "win32"),
+        ):
 
             # Mock venv creation
             mock_builder = Mock()

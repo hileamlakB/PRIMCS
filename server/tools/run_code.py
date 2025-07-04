@@ -1,4 +1,5 @@
 """MCP tool: execute Python code in a sandbox."""
+
 from fastmcp import Context, FastMCP
 
 from server.sandbox.runner import RunCodeResult
@@ -48,7 +49,6 @@ def register(mcp: FastMCP) -> None:
             "[{url, mountPath}]. "
             "Each file is downloaded before execution and made available at "
             "./mounts/<mountPath>. "
-
         ),
     )
     async def _run_code(

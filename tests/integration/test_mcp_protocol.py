@@ -1,12 +1,10 @@
 """Integration tests for MCP protocol functionality."""
 
 import asyncio
-import json
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from httpx import AsyncClient
 
 from server.main import mcp
 
@@ -23,7 +21,7 @@ class TestMCPIntegration:
         assert mcp is not None
         assert mcp.name == "primcs"
         # FastMCP doesn't expose version as an attribute, check initialization instead
-        assert hasattr(mcp, 'name')
+        assert hasattr(mcp, "name")
         assert isinstance(mcp.name, str)
 
     @pytest.mark.asyncio
@@ -31,12 +29,12 @@ class TestMCPIntegration:
         """Test that all tools are properly registered."""
         # Verify MCP instance has the expected structure
         # FastMCP uses different internal structure, check for callable methods
-        assert hasattr(mcp, 'tool')  # Decorator method exists
+        assert hasattr(mcp, "tool")  # Decorator method exists
         assert callable(mcp.tool)
-        
+
         # Verify the server is properly configured
         assert mcp.name == "primcs"
-        
+
         # In a real test, we would inspect the registered tools
         # and verify they match our expected tool set
 
@@ -49,8 +47,9 @@ class TestMCPIntegration:
         mock_download_success: None,
     ) -> None:
         """Test full run_code tool integration."""
-        from server.tools.run_code import register
         from fastmcp import FastMCP
+
+        from server.tools.run_code import register
 
         # Create a test MCP instance
         test_mcp = FastMCP(name="test", version="1.0")
@@ -60,7 +59,7 @@ class TestMCPIntegration:
         # in a real integration test environment
 
         # Mock subprocess for integration test
-        with patch("server.sandbox.runner.asyncio.create_subprocess_exec") as mock_subprocess:
+        with patch("server.sandbox.runner.asyncio.create_subprocess_exec"):
             mock_process = asyncio.create_subprocess_exec
             mock_process.communicate = lambda: (b"Hello World", b"")
             mock_process.returncode = 0

@@ -1,6 +1,5 @@
 """MCP tool: download one or more remote files into mounts/ for the current session."""
 
-
 from pathlib import Path
 
 from fastmcp import Context, FastMCP
@@ -55,4 +54,3 @@ def register(mcp: FastMCP) -> None:
             "mounted_as": str(local.relative_to(root)),
             "bytes": local.stat().st_size,
         }
-

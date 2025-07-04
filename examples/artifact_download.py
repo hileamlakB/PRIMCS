@@ -49,6 +49,7 @@ print('Plot saved!')
                 if resp.status == 200:
                     content = await resp.read()
                     from pathlib import Path
+
                     with Path("downloaded_plot.png").open("wb") as f:
                         f.write(content)
                     print("Artifact downloaded as downloaded_plot.png")
