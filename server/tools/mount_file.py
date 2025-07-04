@@ -1,7 +1,8 @@
 """MCP tool: download one or more remote files into mounts/ for the current session."""
 
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Dict, List
 
 from fastmcp import Context, FastMCP
 
@@ -48,8 +49,8 @@ def register(mcp: FastMCP) -> None:
             raise ValueError("mount_path must be a relative path without '..'")
         root = _session_root(ctx)
         mounts_dir = root / "mounts"
-        spec: Dict[str, str] = {"url": url, "mountPath": mount_path}
-        downloaded: List[Path] = await download_files([spec], mounts_dir)
+        spec: dict[str, str] = {"url": url, "mountPath": mount_path}
+        downloaded: list[Path] = await download_files([spec], mounts_dir)
         local = downloaded[0]
         return {
             "mounted_as": str(local.relative_to(root)),

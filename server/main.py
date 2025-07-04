@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import logging
 import os
+from pathlib import Path
 
 from fastmcp import FastMCP
 from starlette.requests import Request
@@ -43,7 +44,8 @@ async def get_artifact(request: Request) -> Response:
     """
     relative_path = request.path_params["relative_path"]
     relative_path = os.path.normpath(relative_path)
-    if relative_path.startswith("..") or os.path.isabs(relative_path):
+    path_obj = Path(relative_path)
+    if relative_path.startswith("..") or path_obj.is_absolute():
         return Response("Invalid artifact path", status_code=400)
 
     session_id = request.headers.get("mcp-session-id")
@@ -64,7 +66,7 @@ async def get_artifact(request: Request) -> Response:
     if not file_path.is_file():
         return Response("Not a file", status_code=404)
 
-    return FileResponse(str(file_path), filename=os.path.basename(file_path))
+    return FileResponse(str(file_path), filename=file_path.name)
 
 
 if __name__ == "__main__":  # pragma: no cover

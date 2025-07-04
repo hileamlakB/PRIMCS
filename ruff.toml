@@ -1,0 +1,50 @@
+line-length = 88
+target-version = "py39"
+
+[lint]
+# Select specific rule categories that are important
+select = [
+    # pycodestyle
+    "E",
+    "W",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # isort
+    "I",
+    # flake8-unused-arguments  
+    "ARG",
+    # flake8-use-pathlib
+    "PTH",
+]
+
+ignore = [
+    # Line too long - handled by formatter
+    "E501",
+    # Too many arguments
+    "PLR0913",
+    # Too many branches
+    "PLR0912",
+    # Too many statements
+    "PLR0915",
+    # Magic value comparison
+    "PLR2004",
+    # Exception string formatting
+    "EM101", "EM102", "TRY003",
+    # Docstring rules - can be added later
+    "D100", "D101", "D102", "D103", "D104", "D202", "D205",
+    # Assert statement
+    "S101",
+]
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401"]  # Allow unused imports
+"**/test_*.py" = ["ARG", "S"]  # Relax some rules for tests
+"**/conftest.py" = ["ARG", "S"]
+
+[lint.isort]
+known-first-party = ["server"]
+force-single-line = false

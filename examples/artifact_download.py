@@ -48,7 +48,8 @@ print('Plot saved!')
             async with session.get(artifact_url, headers=headers) as resp:
                 if resp.status == 200:
                     content = await resp.read()
-                    with open("downloaded_plot.png", "wb") as f:
+                    from pathlib import Path
+                    with Path("downloaded_plot.png").open("wb") as f:
                         f.write(content)
                     print("Artifact downloaded as downloaded_plot.png")
                 else:

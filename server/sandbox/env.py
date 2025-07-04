@@ -6,10 +6,9 @@ import asyncio
 import sys
 import venv
 from pathlib import Path
-from typing import List
 
 # Default libraries always installed in every sandbox environment.
-_DEFAULT_PACKAGES: List[str] = ["pandas", "openpyxl", "requests"]
+_DEFAULT_PACKAGES: list[str] = ["pandas", "openpyxl", "requests"]
 
 
 async def create_virtualenv(requirements: list[str], run_dir: Path) -> Path:

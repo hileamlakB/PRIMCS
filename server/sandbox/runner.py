@@ -6,7 +6,7 @@ import asyncio
 import mimetypes
 import shutil
 import textwrap
-from typing import List, TypedDict
+from typing import TypedDict
 
 from server.config import TIMEOUT_SECONDS, TMP_DIR
 from server.sandbox.downloader import download_files
@@ -31,7 +31,7 @@ class RunCodeResult(TypedDict, total=False):
 
     stdout: str
     stderr: str
-    artifacts: List[ArtifactMeta]
+    artifacts: list[ArtifactMeta]
     feedback: str
 
 
@@ -79,10 +79,11 @@ async def run_code(
 
     try:
         out, err = await asyncio.wait_for(proc.communicate(), timeout=TIMEOUT_SECONDS)
-    except asyncio.TimeoutError:
+    except asyncio.TimeoutError as err:
         proc.kill()
         await proc.wait()
-        raise RuntimeError(f"Execution timed out after {TIMEOUT_SECONDS}s")
+        msg = f"Execution timed out after {TIMEOUT_SECONDS}s"
+        raise RuntimeError(msg) from err
 
     # Collect artifacts inside the output directory.
     artifacts: list[ArtifactMeta] = []
