@@ -1,5 +1,4 @@
 """MCP tool: execute Python code in a sandbox."""
-
 from fastmcp import Context, FastMCP
 
 from server.sandbox.runner import RunCodeResult
@@ -49,6 +48,7 @@ def register(mcp: FastMCP) -> None:
             "[{url, mountPath}]. "
             "Each file is downloaded before execution and made available at "
             "./mounts/<mountPath>. "
+
         ),
     )
     async def _run_code(
@@ -79,6 +79,7 @@ def register(mcp: FastMCP) -> None:
 
         sid = ctx.session_id  # may be None on Streamable-HTTP
         if not sid and ctx.request_context.request:
+
             # see issue https://github.com/modelcontextprotocol/python-sdk/
             # issues/1063 for more details
             sid = ctx.request_context.request.headers.get("mcp-session-id")

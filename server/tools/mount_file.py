@@ -55,3 +55,4 @@ def register(mcp: FastMCP) -> None:
             "mounted_as": str(local.relative_to(root)),
             "bytes": local.stat().st_size,
         }
+
