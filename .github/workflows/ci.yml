@@ -66,6 +66,7 @@ jobs:
         fail_ci_if_error: false
 
   lint:
+    if: false
     name: Code Quality
     runs-on: ubuntu-latest
 

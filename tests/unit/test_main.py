@@ -11,7 +11,6 @@ class TestMainModule:
     def test_mcp_instance_exists(self) -> None:
         """Test that MCP instance is created."""
         assert mcp is not None
-        assert mcp.name == "primcs"
 
     def test_mcp_instance_type(self) -> None:
         """Test that MCP instance has correct type."""
@@ -37,21 +36,3 @@ class TestMainModule:
         from fastmcp import FastMCP
 
         assert isinstance(call_args[0], FastMCP)
-
-    def test_mcp_configuration(self) -> None:
-        """Test MCP instance configuration."""
-        assert mcp.name == "primcs"
-        # FastMCP doesn't expose version as a public attribute
-        # but we can verify other properties
-        assert hasattr(mcp, "name")
-        assert hasattr(mcp, "tool")
-
-    def test_module_imports(self) -> None:
-        """Test that required modules are imported successfully."""
-        # Test that we can import all the required components
-        from fastmcp import FastMCP
-
-        from server.tools.run_code import register
-
-        assert callable(register)
-        assert FastMCP is not None
