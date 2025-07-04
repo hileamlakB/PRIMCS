@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from unittest.mock import patch
 
 
@@ -16,7 +15,6 @@ class TestSandboxEnvironment:
         mock_proc.communicate.return_value = (b"", b"")
         mock_proc.returncode = 0
 
-        test_dir = Path("/tmp/test")
         requirements = ["pandas", "numpy"]
 
         # Test would call create_virtualenv here
