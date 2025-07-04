@@ -128,7 +128,6 @@ class TestRunCode:
             patch("server.sandbox.runner.asyncio.wait_for") as mock_wait_for,
             patch("server.sandbox.runner.create_virtualenv") as mock_create_venv,
         ):
-
             # Mock virtualenv creation to return the mocked python path
             mock_create_venv.return_value = mock_virtualenv_creation
 

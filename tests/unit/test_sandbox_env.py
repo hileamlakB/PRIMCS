@@ -23,7 +23,6 @@ class TestCreateVirtualenv:
                 "server.sandbox.env.asyncio.create_subprocess_exec"
             ) as mock_subprocess,
         ):
-
             # Mock venv creation
             mock_builder = Mock()
             mock_venv.EnvBuilder.return_value = mock_builder
@@ -78,7 +77,6 @@ class TestCreateVirtualenv:
                 "server.sandbox.env.asyncio.create_subprocess_exec"
             ) as mock_subprocess,
         ):
-
             # Mock venv creation
             mock_builder = Mock()
             mock_venv.EnvBuilder.return_value = mock_builder
@@ -106,7 +104,6 @@ class TestCreateVirtualenv:
                 "server.sandbox.env.asyncio.create_subprocess_exec"
             ) as mock_subprocess,
         ):
-
             # Mock venv creation
             mock_builder = Mock()
             mock_venv.EnvBuilder.return_value = mock_builder
@@ -146,7 +143,6 @@ class TestCreateVirtualenv:
                 "server.sandbox.env.asyncio.create_subprocess_exec"
             ) as mock_subprocess,
         ):
-
             # Mock venv creation
             mock_builder = Mock()
             mock_venv.EnvBuilder.return_value = mock_builder
@@ -189,7 +185,6 @@ class TestCreateVirtualenv:
             ) as mock_subprocess,
             patch("server.sandbox.env.sys.platform", "win32"),
         ):
-
             # Mock venv creation
             mock_builder = Mock()
             mock_venv.EnvBuilder.return_value = mock_builder

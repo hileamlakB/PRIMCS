@@ -79,7 +79,6 @@ def register(mcp: FastMCP) -> None:
 
         sid = ctx.session_id  # may be None on Streamable-HTTP
         if not sid and ctx.request_context.request:
-
             # see issue https://github.com/modelcontextprotocol/python-sdk/
             # issues/1063 for more details
             sid = ctx.request_context.request.headers.get("mcp-session-id")
