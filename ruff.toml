@@ -42,6 +42,7 @@ ignore = [
 
 [lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Allow unused imports
+"server/tools/__init__.py" = ["F401", "I001"]  # Allow unused imports and import formatting
 "**/test_*.py" = ["ARG", "S"]  # Relax some rules for tests
 "**/conftest.py" = ["ARG", "S"]
 
