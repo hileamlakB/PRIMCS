@@ -1,6 +1,7 @@
 import asyncio
+
 from fastmcp import Client
-import json
+
 
 async def main():
     async with Client("http://localhost:9000/mcp") as client:
@@ -8,5 +9,6 @@ async def main():
         result = await client.call_tool("run_code", {"code": code})
         print("Result: \n\t", result)
 
+
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    asyncio.run(main())

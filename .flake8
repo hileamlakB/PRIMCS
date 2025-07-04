@@ -1,0 +1,23 @@
+[flake8]
+max-line-length = 88
+# Black's default line length
+extend-ignore = 
+    # E203: whitespace before ':' (conflicts with black)
+    E203,
+    # W503: line break before binary operator (conflicts with black)
+    W503,
+    # E501: line too long (we set max-line-length to 88)
+    E501
+
+exclude = 
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    build,
+    dist,
+    *.egg-info
+
+per-file-ignores =
+    # Allow unused imports in __init__.py files
+    __init__.py:F401

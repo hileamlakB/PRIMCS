@@ -5,6 +5,7 @@ from fastmcp import Client
 
 SERVER_URL = "http://localhost:9000/mcp"
 
+
 async def main() -> None:
     """Demonstrate workspace inspection tools."""
     async with Client(SERVER_URL) as client:
@@ -41,10 +42,13 @@ async def main() -> None:
             print(f"{entry['type']:9} {entry['path']}  {entry['size']} bytes")
 
         # 4. Preview the text file we just created
-        preview_resp = await client.call_tool("preview_file", {"relative_path": "output/hello.txt"})
+        preview_resp = await client.call_tool(
+            "preview_file", {"relative_path": "output/hello.txt"}
+        )
         preview = json.loads(preview_resp[0].text)
         print("\n=== Preview of output/hello.txt ===")
         print(preview["content"])
 
+
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    asyncio.run(main())

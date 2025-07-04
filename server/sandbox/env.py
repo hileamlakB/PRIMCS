@@ -1,21 +1,22 @@
 """Utility helpers for creating isolated virtual environments."""
-from __future__ import annotations
 
 import asyncio
 import sys
 import venv
 from pathlib import Path
-from typing import List
 
 # Default libraries always installed in every sandbox environment.
-_DEFAULT_PACKAGES: List[str] = ["pandas", "openpyxl", "requests"]
+_DEFAULT_PACKAGES: list[str] = ["pandas", "openpyxl", "requests"]
+
 
 async def create_virtualenv(requirements: list[str], run_dir: Path) -> Path:
     """Create a venv in run_dir/venv and install *requirements*."""
     venv_dir = run_dir / "venv"
     venv.EnvBuilder(with_pip=True, clear=True).create(venv_dir)
 
-    python = venv_dir / ("Scripts" if sys.platform.startswith("win") else "bin") / "python"
+    python = (
+        venv_dir / ("Scripts" if sys.platform.startswith("win") else "bin") / "python"
+    )
 
     # Combine caller-specified requirements with default packages.
     all_requirements = list(dict.fromkeys(requirements + _DEFAULT_PACKAGES))
@@ -35,4 +36,4 @@ async def create_virtualenv(requirements: list[str], run_dir: Path) -> Path:
         if proc.returncode != 0:
             raise RuntimeError(f"pip install failed: {err.decode()}")
 
-    return python 
+    return python
