@@ -122,19 +122,8 @@ curl -H "mcp-session-id: <your-session-id>" \
 
 See the `examples/` directory for end-to-end demos.
 
----
-
-## Roadmap
-- Speed up venv creation, use cached venvs
-- Strict sandboxing (prevent accesing files beyond the venv folder, use user groups, firecrack vm)
-- Harden CPU / memory limits 
-- Artifact storage backend (S3, local disk)
-- Unit tests & CI (GitHub Actions)
-- Dependency resolution recommendations via **LLM sampling**
-- Automated code debugging & error-fix suggestions via **LLM sampling**
-- Auth and security
-- OAuth 2.0 support for remote deployments
-- Health-check and metrics endpoint for orchestration
+## Contributing
+Contributions are welcome! Feel free to open issues, suggest features, or submit pull requests to help improve PRIMS.
 
 
-PRs welcome!  See `LICENSE` (MIT). 
+If you find this project useful, please consider leaving a ⭐ to show your support.
