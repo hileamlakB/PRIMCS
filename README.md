@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/hileamlakb-python-runtime-interpreter-mcp-server-badge.png)](https://mseep.ai/app/hileamlakb-python-runtime-interpreter-mcp-server)
+
 <p align="left">
   <img src="primslogo.png" alt="PRIMS Logo" width="200"/>
   <a href="#"><img src="https://img.shields.io/badge/status-alpha-orange?style=for-the-badge" alt="Status: Alpha"/></a>
