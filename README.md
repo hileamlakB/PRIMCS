@@ -2,6 +2,8 @@
   <img src="primslogo.png" alt="PRIMS Logo" width="200"/>
   <a href="#"><img src="https://img.shields.io/badge/status-alpha-orange?style=for-the-badge" alt="Status: Alpha"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=for-the-badge" alt="License: MIT"/></a>
+
+[![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/hileamlakB/PRIMS)](https://archestra.ai/mcp-catalog/hileamlakb__prims)
 </p>
 
 # PRIMS – Python Runtime Interpreter MCP Server
